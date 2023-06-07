@@ -1,0 +1,1260 @@
+\*_____ ./p3tests/badDec.as _____*\
+class x {
+	void main() {
+		bool x;
+		x--;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badInc.as _____*\
+class x {
+	void main() {
+		char y;
+		y++;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badNegation.as _____*\
+class x {
+	void main() {
+		char y;
+		bool z = (~ y);
+	} 
+}
+
+[ERROR] type:<BOOL> expected for unary logical operators.
+----------------------------------------------
+\*_____ ./p3tests/badString.as _____*\
+class x {
+	void main() {
+		print(("test" - "other"));
+	}
+} 
+
+[ERROR] invalid string operation.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryCond.as _____*\
+class x {
+	void main() {
+		bool y = ( 1.0 ? true : false );
+	}
+}
+
+[ERROR] condition type:<FLOAT> is not coercible to type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryTypes.as _____*\
+class x {
+	void main() {
+		float x = ( true ? 1.0 : false );
+	}
+}
+
+[ERROR] ternary expression results must be homogeneous.
+----------------------------------------------
+\*_____ ./p3tests/boolToFloat.as _____*\
+class x {
+	void main() {
+		float y = false;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/boolToInt.as _____*\
+class x {
+	void main() {
+		int y = false;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/callNonExistFunc.as _____*\
+class x {
+	void main() {
+		nonExistFoo();
+	}
+}
+
+[ERROR] nonExistFoo not defined in the SymbolTable.
+----------------------------------------------
+\*_____ ./p3tests/charToFloat.as _____*\
+class x {
+	void main() {
+		char x;
+		float y;
+		y = x;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/charToInt.as _____*\
+class x {
+	int main() {
+		int y = 'c';
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/floatToInt.as _____*\
+class x {
+	void main() {
+		int i = 1.0;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/fullValidProgramDE.as _____*\
+class testValid {
+	float sqrt(float square, float guess) {
+		float nextGuess;
+		nextGuess = (0.5 * (guess + (square / guess)));
+		if ((((nextGuess - guess) > (- 1.0E-5)) && ((nextGuess - guess) < 1.0E-5)))
+		{
+			return nextGuess;
+		}
+		return sqrt(square, nextGuess);
+	}
+	float getDistance(float vecA[], float vecB[], int size) {
+		int i = 0;
+		float sum = 0;
+		while ((i < size))
+		{
+			sum = (sum + ((vecA[i] - vecB[i]) * (vecA[i] - vecB[i])));
+			i++;
+		}
+
+		return sqrt(sum, 2);
+	}
+	void main() {
+		float a[10];
+		float b[10];
+		final int maxSize = 10;
+		int thisSize;
+		bool validInput;
+		int i;
+		print((("Input the size of your vectors: (max:" + maxSize) + ")"));
+		printline();
+		validInput = false;
+		while ((~ validInput))
+		{
+			read(thisSize);
+			if (((thisSize > 0) && (thisSize <= maxSize)))
+			{
+				validInput = true;
+			}
+			else
+			{
+				print((("Invalid size!\nInput the size of your vectors: (max:" + maxSize) + ")"));
+				printline();
+			}
+		}
+
+		i = 0;
+		while ((i < thisSize))
+		{
+			read(a[i], b[i]);
+			i++;
+		}
+
+		print("Distance between vectors is: ", getDistance(a, b, thisSize));
+	}
+}
+
+[SUCCESS] Type checking complete!
+----------------------------------------------
+\*_____ ./p3tests/incompatBinary.as _____*\
+class x {
+	int main() {
+		float y;
+		while ((y || y))
+			return 1;
+
+		return 0;
+	}
+}
+
+[ERROR] binary operator:<||> does not accept type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/intArrayToBoolArray.as _____*\
+class x {
+	int main() {
+		int x[1];
+		bool y[1];
+		y = x;
+		return 0;
+	}
+}
+
+[ERROR] lhs type:<BOOL[]> does not match rhs type:<INT[]>.
+----------------------------------------------
+\*_____ ./p3tests/noReturn.as _____*\
+class x {
+	int main() {
+	}
+}
+
+[ERROR] return statement required for function:<main>.
+----------------------------------------------
+\*_____ ./p3tests/reassignFinal.as _____*\
+class x {
+	final int y = 1;
+	void main() {
+		y = 2;
+	}
+}
+
+[ERROR] id:<y> is final and cannot be modified.
+----------------------------------------------
+\*_____ ./p3tests/redefMethod.as _____*\
+class x {
+	void foo() {
+	}
+	int foo(int x) {
+		return 1;
+	}
+}
+
+[ERROR] id:<foo> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVar.as _____*\
+class x {
+	int y;
+	char y;
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVarAsMethod.as _____*\
+class x {
+	char y;
+	void y() {
+	}
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/returnTypeBad.as _____*\
+class x {
+	int foo() {
+		return 1.0;
+	}
+}
+
+[ERROR] return type:<FLOAT> does not match expected type:<INT> for function:<foo>.
+----------------------------------------------
+\*_____ ./p3tests/badDec.as _____*\
+class x {
+	void main() {
+		bool x;
+		x--;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badInc.as _____*\
+class x {
+	void main() {
+		char y;
+		y++;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badNegation.as _____*\
+class x {
+	void main() {
+		char y;
+		bool z = (~ y);
+	}
+}
+
+[ERROR] type:<BOOL> expected for unary logical operators.
+----------------------------------------------
+\*_____ ./p3tests/badString.as _____*\
+class x {
+	void main() {
+		print(("test" - "other"));
+	}
+}
+
+[ERROR] invalid string operation.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryCond.as _____*\
+class x {
+	void main() {
+		bool y = ( 1.0 ? true : false );
+	}
+}
+
+[ERROR] condition type:<FLOAT> is not coercible to type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryTypes.as _____*\
+class x {
+	void main() {
+		float x = ( true ? 1.0 : false );
+	}
+}
+
+[ERROR] ternary expression results must be homogeneous.
+----------------------------------------------
+\*_____ ./p3tests/boolToFloat.as _____*\
+class x {
+	void main() {
+		float y = false;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/boolToInt.as _____*\
+class x {
+	void main() {
+		int y = false;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/callNonExistFunc.as _____*\
+class x {
+	void main() {
+		nonExistFoo();
+	}
+}
+
+[ERROR] nonExistFoo not defined in the SymbolTable.
+----------------------------------------------
+\*_____ ./p3tests/charToFloat.as _____*\
+class x {
+	void main() {
+		char x;
+		float y;
+		y = x;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/charToInt.as _____*\
+class x {
+	int main() {
+		int y = 'c';
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/floatToInt.as _____*\
+class x {
+	void main() {
+		int i = 1.0;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/fullValidProgramDE.as _____*\
+class testValid {
+	float sqrt(float square, float guess) {
+		float nextGuess;
+		nextGuess = (0.5 * (guess + (square / guess)));
+		if ((((nextGuess - guess) > (- 1.0E-5)) && ((nextGuess - guess) < 1.0E-5)))
+		{
+			return nextGuess;
+		}
+		return sqrt(square, nextGuess);
+	}
+	float getDistance(float vecA[], float vecB[], int size) {
+		int i = 0;
+		float sum = 0;
+		while ((i < size))
+		{
+			sum = (sum + ((vecA[i] - vecB[i]) * (vecA[i] - vecB[i])));
+			i++;
+		}
+
+		return sqrt(sum, 2);
+	}
+	void main() {
+		float a[10];
+		float b[10];
+		final int maxSize = 10;
+		int thisSize;
+		bool validInput;
+		int i;
+		print((("Input the size of your vectors: (max:" + maxSize) + ")"));
+		printline();
+		validInput = false;
+		while ((~ validInput))
+		{
+			read(thisSize);
+			if (((thisSize > 0) && (thisSize <= maxSize)))
+			{
+				validInput = true;
+			}
+			else
+			{
+				print((("Invalid size!\nInput the size of your vectors: (max:" + maxSize) + ")"));
+				printline();
+			}
+		}
+
+		i = 0;
+		while ((i < thisSize))
+		{
+			read(a[i], b[i]);
+			i++;
+		}
+
+		print("Distance between vectors is: ", getDistance(a, b, thisSize));
+	}
+}
+
+[SUCCESS] Type checking complete!
+----------------------------------------------
+\*_____ ./p3tests/incompatBinary.as _____*\
+class x {
+	int main() {
+		float y;
+		while ((y || y))
+			return 1;
+
+		return 0;
+	}
+}
+
+[ERROR] binary operator:<||> does not accept type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/intArrayToBoolArray.as _____*\
+class x {
+	int main() {
+		int x[1];
+		bool y[1];
+		y = x;
+		return 0;
+	}
+}
+
+[ERROR] lhs type:<BOOL[]> does not match rhs type:<INT[]>.
+----------------------------------------------
+\*_____ ./p3tests/noReturn.as _____*\
+class x {
+	int main() {
+	}
+}
+
+[ERROR] return statement required for function:<main>.
+----------------------------------------------
+\*_____ ./p3tests/reassignFinal.as _____*\
+class x {
+	final int y = 1;
+	void main() {
+		y = 2;
+	}
+}
+
+[ERROR] id:<y> is final and cannot be modified.
+----------------------------------------------
+\*_____ ./p3tests/redefMethod.as _____*\
+class x {
+	void foo() {
+	}
+	int foo(int x) {
+		return 1;
+	}
+}
+
+[ERROR] id:<foo> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVar.as _____*\
+class x {
+	int y;
+	char y;
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVarAsMethod.as _____*\
+class x {
+	char y;
+	void y() {
+	}
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/returnTypeBad.as _____*\
+class x {
+	int foo() {
+		return 1.0;
+	}
+}
+
+[ERROR] return type:<FLOAT> does not match expected type:<INT> for function:<foo>.
+----------------------------------------------
+\*_____ ./p3tests/badDec.as _____*\
+class x {
+	void main() {
+		bool x;
+		x--;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badInc.as _____*\
+class x {
+	void main() {
+		char y;
+		y++;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badNegation.as _____*\
+class x {
+	void main() {
+		char y;
+		bool z = (~ y);
+	}
+}
+
+[ERROR] type:<BOOL> expected for unary logical operators.
+----------------------------------------------
+\*_____ ./p3tests/badString.as _____*\
+class x {
+	void main() {
+		print(("test" - "other"));
+	}
+}
+
+[ERROR] invalid string operation.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryCond.as _____*\
+class x {
+	void main() {
+		bool y = ( 1.0 ? true : false );
+	}
+}
+
+[ERROR] condition type:<FLOAT> is not coercible to type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryTypes.as _____*\
+class x {
+	void main() {
+		float x = ( true ? 1.0 : false );
+	}
+}
+
+[ERROR] ternary expression results must be homogeneous.
+----------------------------------------------
+\*_____ ./p3tests/boolToFloat.as _____*\
+class x {
+	void main() {
+		float y = false;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/boolToInt.as _____*\
+class x {
+	void main() {
+		int y = false;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/callNonExistFunc.as _____*\
+class x {
+	void main() {
+		nonExistFoo();
+	}
+}
+
+[ERROR] nonExistFoo not defined in the SymbolTable.
+----------------------------------------------
+\*_____ ./p3tests/charToFloat.as _____*\
+class x {
+	void main() {
+		char x;
+		float y;
+		y = x;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/charToInt.as _____*\
+class x {
+	int main() {
+		int y = 'c';
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/floatToInt.as _____*\
+class x {
+	void main() {
+		int i = 1.0;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/fullValidProgramDE.as _____*\
+class testValid {
+	float sqrt(float square, float guess) {
+		float nextGuess;
+		nextGuess = (0.5 * (guess + (square / guess)));
+		if ((((nextGuess - guess) > (- 1.0E-5)) && ((nextGuess - guess) < 1.0E-5)))
+		{
+			return nextGuess;
+		}
+		return sqrt(square, nextGuess);
+	}
+	float getDistance(float vecA[], float vecB[], int size) {
+		int i = 0;
+		float sum = 0;
+		while ((i < size))
+		{
+			sum = (sum + ((vecA[i] - vecB[i]) * (vecA[i] - vecB[i])));
+			i++;
+		}
+
+		return sqrt(sum, 2);
+	}
+	void main() {
+		float a[10];
+		float b[10];
+		final int maxSize = 10;
+		int thisSize;
+		bool validInput;
+		int i;
+		print((("Input the size of your vectors: (max:" + maxSize) + ")"));
+		printline();
+		validInput = false;
+		while ((~ validInput))
+		{
+			read(thisSize);
+			if (((thisSize > 0) && (thisSize <= maxSize)))
+			{
+				validInput = true;
+			}
+			else
+			{
+				print((("Invalid size!\nInput the size of your vectors: (max:" + maxSize) + ")"));
+				printline();
+			}
+		}
+
+		i = 0;
+		while ((i < thisSize))
+		{
+			read(a[i], b[i]);
+			i++;
+		}
+
+		print("Distance between vectors is: ", getDistance(a, b, thisSize));
+	}
+}
+
+[SUCCESS] Type checking complete!
+----------------------------------------------
+\*_____ ./p3tests/incompatBinary.as _____*\
+class x {
+	int main() {
+		float y;
+		while ((y || y))
+			return 1;
+
+		return 0;
+	}
+}
+
+[ERROR] binary operator:<||> does not accept type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/intArrayToBoolArray.as _____*\
+class x {
+	int main() {
+		int x[1];
+		bool y[1];
+		y = x;
+		return 0;
+	}
+}
+
+[ERROR] lhs type:<BOOL[]> does not match rhs type:<INT[]>.
+----------------------------------------------
+\*_____ ./p3tests/noReturn.as _____*\
+class x {
+	int main() {
+	}
+}
+
+[ERROR] return statement required for function:<main>.
+----------------------------------------------
+\*_____ ./p3tests/reassignFinal.as _____*\
+class x {
+	final int y = 1;
+	void main() {
+		y = 2;
+	}
+}
+
+[ERROR] id:<y> is final and cannot be modified.
+----------------------------------------------
+\*_____ ./p3tests/redefMethod.as _____*\
+class x {
+	void foo() {
+	}
+	int foo(int x) {
+		return 1;
+	}
+}
+
+[ERROR] id:<foo> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVar.as _____*\
+class x {
+	int y;
+	char y;
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVarAsMethod.as _____*\
+class x {
+	char y;
+	void y() {
+	}
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/returnTypeBad.as _____*\
+class x {
+	int foo() {
+		return 1.0;
+	}
+}
+
+[ERROR] return type:<FLOAT> does not match expected type:<INT> for function:<foo>.
+----------------------------------------------
+\*_____ ./p3tests/badDec.as _____*\
+class x {
+	void main() {
+		bool x;
+		x--;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badInc.as _____*\
+class x {
+	void main() {
+		char y;
+		y++;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badNegation.as _____*\
+class x {
+	void main() {
+		char y;
+		bool z = (~ y);
+	}
+}
+
+[ERROR] type:<BOOL> expected for unary logical operators.
+----------------------------------------------
+\*_____ ./p3tests/badString.as _____*\
+class x {
+	void main() {
+		print(("test" - "other"));
+	}
+}
+
+[ERROR] invalid string operation.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryCond.as _____*\
+class x {
+	void main() {
+		bool y = ( 1.0 ? true : false );
+	}
+}
+
+[ERROR] condition type:<FLOAT> is not coercible to type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryTypes.as _____*\
+class x {
+	void main() {
+		float x = ( true ? 1.0 : false );
+	}
+}
+
+[ERROR] ternary expression results must be homogeneous.
+----------------------------------------------
+\*_____ ./p3tests/boolToFloat.as _____*\
+class x {
+	void main() {
+		float y = false;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/boolToInt.as _____*\
+class x {
+	void main() {
+		int y = false;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/callNonExistFunc.as _____*\
+class x {
+	void main() {
+		nonExistFoo();
+	}
+}
+
+[ERROR] nonExistFoo not defined in the SymbolTable.
+----------------------------------------------
+\*_____ ./p3tests/charToFloat.as _____*\
+class x {
+	void main() {
+		char x;
+		float y;
+		y = x;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/charToInt.as _____*\
+class x {
+	int main() {
+		int y = 'c';
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/floatToInt.as _____*\
+class x {
+	void main() {
+		int i = 1.0;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/fullValidProgramDE.as _____*\
+class testValid {
+	float sqrt(float square, float guess) {
+		float nextGuess;
+		nextGuess = (0.5 * (guess + (square / guess)));
+		if ((((nextGuess - guess) > (- 1.0E-5)) && ((nextGuess - guess) < 1.0E-5)))
+		{
+			return nextGuess;
+		}
+		return sqrt(square, nextGuess);
+	}
+	float getDistance(float vecA[], float vecB[], int size) {
+		int i = 0;
+		float sum = 0;
+		while ((i < size))
+		{
+			sum = (sum + ((vecA[i] - vecB[i]) * (vecA[i] - vecB[i])));
+			i++;
+		}
+
+		return sqrt(sum, 2);
+	}
+	void main() {
+		float a[10];
+		float b[10];
+		final int maxSize = 10;
+		int thisSize;
+		bool validInput;
+		int i;
+		print((("Input the size of your vectors: (max:" + maxSize) + ")"));
+		printline();
+		validInput = false;
+		while ((~ validInput))
+		{
+			read(thisSize);
+			if (((thisSize > 0) && (thisSize <= maxSize)))
+			{
+				validInput = true;
+			}
+			else
+			{
+				print((("Invalid size!\nInput the size of your vectors: (max:" + maxSize) + ")"));
+				printline();
+			}
+		}
+
+		i = 0;
+		while ((i < thisSize))
+		{
+			read(a[i], b[i]);
+			i++;
+		}
+
+		print("Distance between vectors is: ", getDistance(a, b, thisSize));
+	}
+}
+
+[SUCCESS] Type checking complete!
+----------------------------------------------
+\*_____ ./p3tests/incompatBinary.as _____*\
+class x {
+	int main() {
+		float y;
+		while ((y || y))
+			return 1;
+
+		return 0;
+	}
+}
+
+[ERROR] binary operator:<||> does not accept type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/intArrayToBoolArray.as _____*\
+class x {
+	int main() {
+		int x[1];
+		bool y[1];
+		y = x;
+		return 0;
+	}
+}
+
+[ERROR] lhs type:<BOOL[]> does not match rhs type:<INT[]>.
+----------------------------------------------
+\*_____ ./p3tests/noReturn.as _____*\
+class x {
+	int main() {
+	}
+}
+
+[ERROR] return statement required for function:<main>.
+----------------------------------------------
+\*_____ ./p3tests/reassignFinal.as _____*\
+class x {
+	final int y = 1;
+	void main() {
+		y = 2;
+	}
+}
+
+[ERROR] id:<y> is final and cannot be modified.
+----------------------------------------------
+\*_____ ./p3tests/redefMethod.as _____*\
+class x {
+	void foo() {
+	}
+	int foo(int x) {
+		return 1;
+	}
+}
+
+[ERROR] id:<foo> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVar.as _____*\
+class x {
+	int y;
+	char y;
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVarAsMethod.as _____*\
+class x {
+	char y;
+	void y() {
+	}
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/returnTypeBad.as _____*\
+class x {
+	int foo() {
+		return 1.0;
+	}
+}
+
+[ERROR] return type:<FLOAT> does not match expected type:<INT> for function:<foo>.
+----------------------------------------------
+\*_____ ./p3tests/badDec.as _____*\
+class x {
+	void main() {
+		bool x;
+		x--;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badInc.as _____*\
+class x {
+	void main() {
+		char y;
+		y++;
+	}
+}
+
+[ERROR] type:<INT|FLOAT> expected for unary arithmetic operators.
+----------------------------------------------
+\*_____ ./p3tests/badNegation.as _____*\
+class x {
+	void main() {
+		char y;
+		bool z = (~ y);
+	}
+}
+
+[ERROR] type:<BOOL> expected for unary logical operators.
+----------------------------------------------
+\*_____ ./p3tests/badString.as _____*\
+class x {
+	void main() {
+		print(("test" - "other"));
+	}
+}
+
+[ERROR] invalid string operation.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryCond.as _____*\
+class x {
+	void main() {
+		bool y = ( 1.0 ? true : false );
+	}
+}
+
+[ERROR] condition type:<FLOAT> is not coercible to type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/badTernaryTypes.as _____*\
+class x {
+	void main() {
+		float x = ( true ? 1.0 : false );
+	}
+}
+
+[ERROR] ternary expression results must be homogeneous.
+----------------------------------------------
+\*_____ ./p3tests/boolToFloat.as _____*\
+class x {
+	void main() {
+		float y = false;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/boolToInt.as _____*\
+class x {
+	void main() {
+		int y = false;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<BOOL>.
+----------------------------------------------
+\*_____ ./p3tests/callNonExistFunc.as _____*\
+class x {
+	void main() {
+		nonExistFoo();
+	}
+}
+
+[ERROR] nonExistFoo not defined in the SymbolTable.
+----------------------------------------------
+\*_____ ./p3tests/charToFloat.as _____*\
+class x {
+	void main() {
+		char x;
+		float y;
+		y = x;
+	}
+}
+
+[ERROR] lhs type:<FLOAT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/charToInt.as _____*\
+class x {
+	int main() {
+		int y = 'c';
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<CHAR>.
+----------------------------------------------
+\*_____ ./p3tests/floatToInt.as _____*\
+class x {
+	void main() {
+		int i = 1.0;
+	}
+}
+
+[ERROR] lhs type:<INT> does not match rhs type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/fullValidProgramDE.as _____*\
+class testValid {
+	float sqrt(float square, float guess) {
+		float nextGuess;
+		nextGuess = (0.5 * (guess + (square / guess)));
+		if ((((nextGuess - guess) > (- 1.0E-5)) && ((nextGuess - guess) < 1.0E-5)))
+		{
+			return nextGuess;
+		}
+		return sqrt(square, nextGuess);
+	}
+	float getDistance(float vecA[], float vecB[], int size) {
+		int i = 0;
+		float sum = 0;
+		while ((i < size))
+		{
+			sum = (sum + ((vecA[i] - vecB[i]) * (vecA[i] - vecB[i])));
+			i++;
+		}
+
+		return sqrt(sum, 2);
+	}
+	void main() {
+		float a[10];
+		float b[10];
+		final int maxSize = 10;
+		int thisSize;
+		bool validInput;
+		int i;
+		print((("Input the size of your vectors: (max:" + maxSize) + ")"));
+		printline();
+		validInput = false;
+		while ((~ validInput))
+		{
+			read(thisSize);
+			if (((thisSize > 0) && (thisSize <= maxSize)))
+			{
+				validInput = true;
+			}
+			else
+			{
+				print((("Invalid size!\nInput the size of your vectors: (max:" + maxSize) + ")"));
+				printline();
+			}
+		}
+
+		i = 0;
+		while ((i < thisSize))
+		{
+			read(a[i], b[i]);
+			i++;
+		}
+
+		print("Distance between vectors is: ", getDistance(a, b, thisSize));
+	}
+}
+
+[SUCCESS] Type checking complete!
+----------------------------------------------
+\*_____ ./p3tests/incompatBinary.as _____*\
+class x {
+	int main() {
+		float y;
+		while ((y || y))
+			return 1;
+
+		return 0;
+	}
+}
+
+[ERROR] binary operator:<||> does not accept type:<FLOAT>.
+----------------------------------------------
+\*_____ ./p3tests/intArrayToBoolArray.as _____*\
+class x {
+	int main() {
+		int x[1];
+		bool y[1];
+		y = x;
+		return 0;
+	}
+}
+
+[ERROR] lhs type:<BOOL[]> does not match rhs type:<INT[]>.
+----------------------------------------------
+\*_____ ./p3tests/noReturn.as _____*\
+class x {
+	int main() {
+	}
+}
+
+[ERROR] return statement required for function:<main>.
+----------------------------------------------
+\*_____ ./p3tests/reassignFinal.as _____*\
+class x {
+	final int y = 1;
+	void main() {
+		y = 2;
+	}
+}
+
+[ERROR] id:<y> is final and cannot be modified.
+----------------------------------------------
+\*_____ ./p3tests/redefMethod.as _____*\
+class x {
+	void foo() {
+	}
+	int foo(int x) {
+		return 1;
+	}
+}
+
+[ERROR] id:<foo> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVar.as _____*\
+class x {
+	int y;
+	char y;
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/redefVarAsMethod.as _____*\
+class x {
+	char y;
+	void y() {
+	}
+}
+
+[ERROR] id:<y> is already defined within the current scope.
+----------------------------------------------
+\*_____ ./p3tests/returnTypeBad.as _____*\
+class x {
+	int foo() {
+		return 1.0;
+	}
+}
+
+[ERROR] return type:<FLOAT> does not match expected type:<INT> for function:<foo>.
+----------------------------------------------

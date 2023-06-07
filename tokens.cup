@@ -1,0 +1,272 @@
+import java_cup.runtime.*;
+import java.util.*;
+
+terminal String CLASS;
+terminal String ID;
+terminal QUESTION;
+terminal AND, OR, TRUE, FALSE;
+terminal READ, PRINT, PRINTLN;
+terminal INCREMENT, DECREMENT, NOT;
+terminal MULTIPLY, DIVIDE, PLUS, MINUS;
+terminal EQUAL, LESSTHAN, GREATERTHAN, LESSTHAN_OR_EQUAL, GREATERTHAN_OR_EQUAL, NOTEQUAL;
+terminal IF, ELSE, WHILE, RETURN;
+terminal SEMICOLON, COMMA, PARENTHASIS_OPEN, PARENTHASIS_CLOSE, CURLY_BRACKET_OPEN, CURLY_BRACKET_CLOSE, BRACKET_OPEN, BRACKET_CLOSE, ASSIGN, COLON;
+terminal FINAL;
+terminal CHAR, INT, FLOAT, VOID, BOOL;
+terminal String CHARLITERAL, STRINGLITERAL, INTLITERAL, FLOATLITERAL;
+non terminal Program program;
+non terminal Memberdecls memberdecls;
+non terminal ArrayList<Fielddecl> fielddecls;
+non terminal ArrayList<Methoddecl> methoddecls;
+non terminal Fielddecl fielddecl;
+non terminal Methoddecl methoddecl;
+non terminal Expr optionalexpr;
+non terminal Boolean optionalsemi;
+non terminal String type;
+non terminal ArrayList<Argdecl> argdecllist;
+non terminal ArrayList<Argdecl> argdecls;
+non terminal Argdecl argdecl;
+non terminal ArrayList<Stmt> stmts;
+non terminal Stmt stmt;
+non terminal Stmt ifEnd;
+non terminal ArrayList<Expr> args;
+non terminal ArrayList<Name> readlist; 
+non terminal ArrayList<Expr> printlist;
+non terminal ArrayList<Expr> printlinelist; 
+non terminal Name name;
+non terminal Expr expr;
+
+
+terminal UPLUS, UMINUS; 
+precedence left ELSE;
+precedence left ASSIGN;
+precedence left QUESTION;
+precedence left OR;
+precedence left AND;
+precedence left NOTEQUAL, EQUAL;
+precedence left GREATERTHAN, GREATERTHAN_OR_EQUAL, LESSTHAN, LESSTHAN_OR_EQUAL;
+precedence left PLUS, MINUS;
+precedence left MULTIPLY, DIVIDE;
+precedence left NOT, UPLUS, UMINUS;
+
+start with program;
+program ::= CLASS ID:id CURLY_BRACKET_OPEN memberdecls:ms CURLY_BRACKET_CLOSE
+                                                        {: RESULT = new Program(id, ms); :}
+                                        ;
+memberdecls ::= fielddecl:f memberdecls:mds
+                                                                        {: RESULT = new Memberdecls(f, mds); :}
+                                                        | methoddecls:ms
+                                                                        {: RESULT = new Memberdecls(ms); :}
+                                                        ;
+fielddecls ::=  fielddecl:f fielddecls:fs
+                                                                        {:
+                                                                                fs.add(0,f);
+                                                                                RESULT = fs;
+                                                                        :}
+                                                        |
+                                                                        {: RESULT = new ArrayList<Fielddecl>(); :}
+                                                        ;
+methoddecls ::= methoddecl:m methoddecls:ms
+                                                                        {:
+                                                                                ms.add(0,m);
+                                                                                RESULT = ms;
+                                                                        :}
+                                                        |
+                                                                        {: RESULT = new ArrayList<Methoddecl>(); :}
+                                                        ;
+fielddecl ::=   FINAL type:t ID:id optionalexpr:opex SEMICOLON
+                                                                {: RESULT = new Fielddecl(t, id, opex, true); :}
+                                                |       type:t ID:id optionalexpr:opex SEMICOLON
+                                                                {: RESULT = new Fielddecl(t, id, opex, false); :}
+       |       type:t ID:id BRACKET_OPEN INTLITERAL:len BRACKET_CLOSE SEMICOLON
+                                                                {: RESULT = new Fielddecl(t, id, Integer.parseInt(len)); :}
+                                                ;
+optionalexpr ::=        ASSIGN expr:e
+                                                                                {: RESULT = e; :}
+                                                                |
+                                                                                {: RESULT = null; :}
+                                                                ;
+methoddecl ::=  type:t ID:id PARENTHASIS_OPEN argdecls:as PARENTHASIS_CLOSE CURLY_BRACKET_OPEN fielddecls:fs stmts:sts CURLY_BRACKET_CLOSE optionalsemi:opsemi
+                                                                        {: RESULT = new Methoddecl(t, id, as, fs, sts, opsemi); :}
+                                                        | VOID ID:id PARENTHASIS_OPEN argdecls:as PARENTHASIS_CLOSE CURLY_BRACKET_OPEN
+													 fielddecls:fs stmts:sts CURLY_BRACKET_CLOSE optionalsemi:opsemi
+                                                                        {: RESULT = new Methoddecl("void", id, as, fs, sts, opsemi); :}
+                                                        ;
+optionalsemi ::=        SEMICOLON
+                                                                                {: RESULT = true; :}
+                                                                |
+                                                                                {: RESULT = false; :}
+                                                                ;
+type ::=        INT
+                                                {: RESULT = "int"; :}
+                                |       FLOAT
+                                                {: RESULT = "float"; :}
+                                |       BOOL
+                                                {: RESULT = "bool"; :}
+                                | CHAR
+                                                {: RESULT = "char"; :}
+                                ;
+argdecls ::=    argdecllist:alst
+                                                                {: RESULT = alst; :}
+                                                |
+                                                                {: RESULT = new ArrayList<Argdecl>(); :}
+                                                ;
+argdecllist ::= argdecl:a COMMA argdecllist:alst
+                                                                        {:
+                                                                                alst.add(0,a);
+                                                                                RESULT = alst;
+                                                                        :}
+                                                        |       argdecl:a
+                                                                        {:
+                                                                                ArrayList<Argdecl> temp = new ArrayList<Argdecl>();
+                                                                                temp.add(a);
+                                                                                RESULT = temp;
+                                                                        :}
+                                                        ;
+argdecl ::=     type:t ID:id
+                                                        {: RESULT = new Argdecl(t, id, false); :}
+                                        |       type:t ID:id BRACKET_OPEN BRACKET_CLOSE
+                                                        {: RESULT = new Argdecl(t, id, true); :}
+                                                ;
+stmts ::=       stmt:st stmts:sts
+          {:
+                                                        sts.add(0,st);
+                                                        RESULT = sts;
+                                                :}
+                                |
+                                                {: RESULT = new ArrayList<Stmt>(); :}
+                                ;
+stmt ::=        IF PARENTHASIS_OPEN expr:e PARENTHASIS_CLOSE stmt:st ifEnd:elsest
+                                                {: RESULT = new Stmt(e, st, elsest); :}
+                                |       WHILE PARENTHASIS_OPEN expr:e PARENTHASIS_CLOSE stmt:st
+                                                {: RESULT = new Stmt(e, st); :}
+                                |       name:n ASSIGN expr:e SEMICOLON
+                                                {: RESULT = new Stmt(n, e); :}
+                                |       READ PARENTHASIS_OPEN readlist:rl PARENTHASIS_CLOSE SEMICOLON
+                                                {: RESULT = new Stmt("read", rl); :}
+                                | PRINT PARENTHASIS_OPEN printlist:pl PARENTHASIS_CLOSE SEMICOLON
+                                                {: RESULT = new Stmt("print", pl); :}
+                                |       PRINTLN PARENTHASIS_OPEN printlinelist:pll PARENTHASIS_CLOSE SEMICOLON
+                                                {: RESULT = new Stmt("printline", pll); :}
+                                |       ID:id PARENTHASIS_OPEN PARENTHASIS_CLOSE SEMICOLON
+                                                {: RESULT = new Stmt(id); :}
+                                |       ID:id PARENTHASIS_OPEN args:args PARENTHASIS_CLOSE SEMICOLON
+                                                {: RESULT = new Stmt(id, args, true); :}
+                                | RETURN SEMICOLON
+                                                {: RESULT = new Stmt(); :}
+                                | RETURN expr:e SEMICOLON
+                                                {: RESULT = new Stmt(e); :}
+                                |       name:n INCREMENT SEMICOLON
+                                                {: RESULT = new Stmt(n, "++"); :}
+                                | name:n DECREMENT SEMICOLON
+                                                {: RESULT = new Stmt(n, "--"); :}
+                                | CURLY_BRACKET_OPEN
+							 fielddecls:fs stmts:sts CURLY_BRACKET_CLOSE optionalsemi:opsemi
+                                                {: RESULT = new Stmt(fs, sts, opsemi); :}
+                                ;
+ifEnd ::=       ELSE stmt:st
+                                                {: RESULT = st; :}
+                                |
+                                                {: RESULT = null; :}
+                                ;
+name ::=  ID:id
+                                                {: RESULT = new Name(id); :}
+        | ID:id BRACKET_OPEN expr:e BRACKET_CLOSE
+                                                {: RESULT = new Name(id, e); :}
+                                ;
+args ::=        expr:e COMMA args:args
+                                                {:
+                                                        args.add(0,e);
+                                                        RESULT = args;
+                                                :}
+                                |       expr:e
+                                                {:
+                                                        ArrayList<Expr> temp = new ArrayList<Expr>();
+                                                        temp.add(e);
+                                                        RESULT = temp;
+                                                :}
+                                ;
+readlist ::=    name:n COMMA readlist:rl
+                                                                {:
+                                                                        rl.add(0,n);
+                                                                        RESULT = rl;
+                                                                :}
+  |       name:n
+                                                                {:
+                                                                        ArrayList<Name> temp = new ArrayList<Name>();
+                                                                        temp.add(n);
+                                                                        RESULT = temp;
+                                                                :}
+                                                ;
+printlist ::=   expr:e COMMA printlist:pl
+                                                                {:
+                                                                        pl.add(0,e);
+                                                                        RESULT = pl;
+                                                                :}
+                                                |       expr:e
+                                                                {:
+                                                                        ArrayList<Expr> temp = new ArrayList<Expr>();
+                                                                        temp.add(e);
+                                                                        RESULT = temp;
+                                                                :}
+                                                ;
+printlinelist ::=       printlist:pl
+                                                                                {: RESULT = pl; :}
+                                                                |
+                                                                                {: RESULT = new ArrayList<Expr>(); :}
+                                                                ;
+expr ::=        name:n
+                                                {: RESULT = new Expr(n); :}
+        |       ID:id PARENTHASIS_OPEN PARENTHASIS_CLOSE
+                                                {: RESULT = new Expr(id, true); :}
+                                |       ID:id PARENTHASIS_OPEN args:args PARENTHASIS_CLOSE
+                                                {: RESULT = new Expr(id, args); :}
+                                |       INTLITERAL:i
+                                                {: RESULT = new Expr(Integer.parseInt(i)); :}
+                                | 		CHARLITERAL:c
+                                                {: RESULT = new Expr(c, 'c'); :}
+                                | 		STRINGLITERAL:s
+                                                {: RESULT = new Expr(s, 's'); :}
+                                |       FLOATLITERAL:f
+                                                {: RESULT = new Expr(Float.parseFloat(f)); :}
+                                | 		TRUE
+                                                {: RESULT = new Expr(true); :}
+                                | 		FALSE
+                                                {: RESULT = new Expr(false); :}
+                                | 		PARENTHASIS_OPEN expr:e PARENTHASIS_CLOSE
+                                                {: RESULT = new Expr(e); :}
+                                |       NOT expr:e
+                                                {: RESULT = new Expr(e, "~"); :}
+                                |       MINUS expr:e
+                                                {: RESULT = new Expr(e, "-"); :} %prec UMINUS
+                                |       PLUS expr:e
+                                                {: RESULT = new Expr(e, "+"); :} %prec UPLUS
+                                |       PARENTHASIS_OPEN type:t PARENTHASIS_CLOSE expr:e
+                                                {: RESULT = new Expr(t, e); :}
+                                |       expr:e1 PLUS expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("+"), e2); :}
+                                |       expr:e1 MINUS expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("-"), e2); :}
+                                |       expr:e1 MULTIPLY expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("*"), e2); :}
+                                |       expr:e1 DIVIDE expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("/"), e2); :}
+ |       								expr:e1 GREATERTHAN expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp(">"), e2); :}
+                                |       expr:e1 LESSTHAN expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("<"), e2); :}
+                                |       expr:e1 GREATERTHAN_OR_EQUAL expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp(">="), e2); :}
+                                |       expr:e1 LESSTHAN_OR_EQUAL expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("<="), e2); :}
+                                |       expr:e1 EQUAL expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("=="), e2); :}
+                                |       expr:e1 NOTEQUAL expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("<>"), e2); :}
+                                |       expr:e1 OR expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("||"), e2); :}
+                                |       expr:e1 AND expr:e2
+                                                {: RESULT = new Expr(e1, new BinaryOp("&&"), e2); :}
+                                |       PARENTHASIS_OPEN expr:e1 QUESTION expr:e2 COLON expr:e3 PARENTHASIS_CLOSE
+                                                {: RESULT = new Expr(e1, e2, e3); :}
+                                ;
